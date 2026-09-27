@@ -1,0 +1,137 @@
+<%- include("./partials/header") %>
+
+<main class="dashboard-page">
+  <section class="page-hero">
+    <div>
+      <span class="eyebrow">LEIA + CAAV</span>
+      <h1>Leiturometro</h1>
+      <p>Acompanhe o ritmo de leitura das turmas de forma simples e visual.</p>
+    </div>
+    <div class="page-hero-icon">
+      <i class="bi bi-bar-chart-line"></i>
+    </div>
+  </section>
+
+  <% if (!data.length) { %>
+    <div class="empty-state">
+      <i class="bi bi-database-exclamation"></i>
+      <h2>Sem dados de turmas</h2>
+      <p>Não foi possível carregar os dados da tabela <strong>turmas</strong>.</p>
+    </div>
+  <% } else { %>
+    <section class="chart-grid mt-4">
+      <article class="chart-card">
+        <div class="chart-card-head">
+          <div>
+            <span class="chart-kicker">Distribuição</span>
+            <h2>Livros lidos por turma</h2>
+          </div>
+          <span class="chart-icon"><i class="bi bi-pie-chart-fill"></i></span>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="readersChart"></canvas>
+        </div>
+      </article>
+
+      <article class="chart-card">
+        <div class="chart-card-head">
+          <div>
+            <span class="chart-kicker">Ranking</span>
+            <h2>Turmas que mais leem</h2>
+          </div>
+          <span class="chart-icon"><i class="bi bi-trophy-fill"></i></span>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="classesChart"></canvas>
+        </div>
+      </article>
+    </section>
+
+    <section class="reading-summary">
+      <div>
+        <span>Total registrado</span>
+        <strong><%= data.reduce((sum, item) => sum + Number(item.livros_lidos || 0), 0) %></strong>
+        <small>livros lidos</small>
+      </div>
+
+      <div>
+        <span>Turmas cadastradas</span>
+        <strong><%= data.length %></strong>
+        <small>no leiturometro</small>
+      </div>
+    </section>
+  <% } %>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const turmas = <%- JSON.stringify(data) %>;
+
+  if (turmas.length) {
+    const labels = turmas.map((turma) => turma.turma);
+    const values = turmas.map((turma) => Number(turma.livros_lidos || 0));
+    const colors = turmas.map((turma) => turma.cor || "#198754");
+
+    new Chart(document.getElementById("readersChart"), {
+      type: "doughnut",
+      data: {
+        labels,
+        datasets: [{
+          data: values,
+          backgroundColor: colors,
+          borderColor: "#ffffff",
+          borderWidth: 3,
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: "58%",
+        plugins: {
+          legend: {
+            position: "right",
+            labels: {
+              usePointStyle: true,
+              pointStyle: "circle",
+              padding: 18,
+              font: { size: 14 },
+            },
+          },
+        },
+      },
+    });
+
+    new Chart(document.getElementById("classesChart"), {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [{
+          label: "Livros lidos",
+          data: values,
+          backgroundColor: colors,
+          borderRadius: 10,
+          borderSkipped: false,
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { precision: 0 },
+            grid: { color: "rgba(25, 135, 84, 0.10)" },
+          },
+          x: {
+            grid: { display: false },
+          },
+        },
+        plugins: {
+          legend: { display: false },
+        },
+      },
+    });
+  }
+</script>
+
+<%- include("./partials/footer") %>

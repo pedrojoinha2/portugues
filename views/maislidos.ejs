@@ -1,0 +1,74 @@
+<%- include("./partials/header") %>
+
+<main class="catalog-page">
+  <section class="page-hero page-hero-green">
+    <div>
+      <span class="eyebrow">RANKING DE LEITURA</span>
+      <h1>Os Mais Lidos</h1>
+      <p>Veja quais livros estão chamando mais atenção entre os leitores.</p>
+    </div>
+    <div class="page-hero-icon">
+      <i class="bi bi-trophy-fill"></i>
+    </div>
+  </section>
+
+  <section class="top-books mt-4">
+    <% books.slice(0, 3).forEach((book, index) => { %>
+      <article class="top-book-card top-<%= index + 1 %>">
+        <div class="rank-badge"><%= index + 1 %></div>
+        <div class="top-book-cover">
+          <i class="bi bi-book-half"></i>
+        </div>
+        <div class="top-book-content">
+          <span class="book-category"><%= book.category %></span>
+          <h2><%= book.title %></h2>
+          <p><%= book.authors %></p>
+          <strong><%= book.reads %> leituras</strong>
+        </div>
+      </article>
+    <% }) %>
+  </section>
+
+  <section class="ranking-section">
+    <div class="section-heading-inline">
+      <div>
+        <span class="chart-kicker">RANKING</span>
+        <h2>Lista completa</h2>
+      </div>
+      <span class="result-count"><%= books.length %> livros</span>
+    </div>
+
+    <div class="ranking-list">
+      <% books.forEach((book, index) => { %>
+        <article class="ranking-row">
+          <div class="ranking-position"><%= index + 1 %></div>
+
+          <div class="ranking-book-icon">
+            <i class="bi bi-book"></i>
+          </div>
+
+          <div class="ranking-info">
+            <h3><%= book.title %></h3>
+            <p><%= book.authors %></p>
+          </div>
+
+          <span class="book-category ranking-category"><%= book.category %></span>
+          <strong class="ranking-reads"><%= book.reads %> <span>leituras</span></strong>
+        </article>
+      <% }) %>
+    </div>
+
+    <div class="data-warning">
+      <i class="bi bi-info-circle"></i>
+      <div>
+        <strong>Dados de exemplo</strong>
+        <p>
+          O projeto enviado ainda não possui uma tabela de histórico de leituras.
+          Quando ela existir, este ranking pode ser alimentado diretamente pelo PostgreSQL.
+        </p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include("./partials/footer") %>

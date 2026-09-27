@@ -1,0 +1,77 @@
+<%- include("./partials/header") %>
+
+<main class="catalog-page">
+  <section class="page-hero page-hero-green">
+    <div>
+      <span class="eyebrow">DESCUBRA SUA PRÓXIMA LEITURA</span>
+      <h1>Recomendações</h1>
+      <p>Encontre livros que combinam com seus interesses e explore novas histórias.</p>
+    </div>
+    <div class="page-hero-icon">
+      <i class="bi bi-stars"></i>
+    </div>
+  </section>
+
+  <section class="recommend-search">
+    <form action="/recomendacoes" method="GET" class="search-box">
+      <i class="bi bi-search"></i>
+      <input
+        type="search"
+        name="q"
+        value="<%= search %>"
+        placeholder="Procure por título, autor ou assunto..."
+        aria-label="Buscar livros para recomendação"
+      />
+      <button type="submit">Buscar</button>
+    </form>
+
+    <div class="topic-chips">
+      <a href="/recomendacoes?q=literatura+brasileira" class="topic-chip">Literatura brasileira</a>
+      <a href="/recomendacoes?q=aventura" class="topic-chip">Aventura</a>
+      <a href="/recomendacoes?q=fantasia" class="topic-chip">Fantasia</a>
+      <a href="/recomendacoes?q=juvenil" class="topic-chip">Juvenil</a>
+    </div>
+
+    <% if (usingApi) { %>
+      <p class="data-note"><i class="bi bi-cloud-check"></i> Resultados atualizados pelo Google Books.</p>
+    <% } else { %>
+      <p class="data-note"><i class="bi bi-book"></i> Mostrando sugestões locais enquanto o Google Books não está disponível.</p>
+    <% } %>
+  </section>
+
+  <section class="recommend-section">
+    <div class="section-heading-inline">
+      <div>
+        <span class="chart-kicker">SUGESTÕES</span>
+        <h2><%= search ? `Resultados para “${search}”` : "Livros para conhecer" %></h2>
+      </div>
+      <span class="result-count"><%= books.length %> livros</span>
+    </div>
+
+    <div class="book-grid">
+      <% books.forEach((book) => { %>
+        <article class="book-card">
+          <div class="book-cover <%= book.cover ? 'has-image' : '' %>">
+            <% if (book.cover) { %>
+              <img src="<%= book.cover %>" alt="Capa de <%= book.title %>" loading="lazy" />
+            <% } else { %>
+              <span><%= book.title.slice(0, 1).toUpperCase() %></span>
+            <% } %>
+          </div>
+
+          <div class="book-content">
+            <span class="book-category"><%= book.category %></span>
+            <h3><%= book.title %></h3>
+            <p class="book-author"><%= book.authors %></p>
+            <p class="book-description"><%= book.description %></p>
+            <a href="<%= book.link %>" target="_blank" rel="noreferrer" class="book-link">
+              Ver livro <i class="bi bi-arrow-up-right"></i>
+            </a>
+          </div>
+        </article>
+      <% }) %>
+    </div>
+  </section>
+</main>
+
+<%- include("./partials/footer") %>
